@@ -30,9 +30,9 @@ router('some event', {some:'argument'});
 
 # Features
 
-* Express-like routing capabilties for events.
-* Gives you more control over how events are handled.
-* Attach `Router` instances to other `Router` instances.
+* Express-like routing capabilties for data.
+* Gives you more control over how data is handled.
+* Attach `Switch` instances to other `Switich` instances.
 * Support for "wildcard" (*) and Regular Expression matching.
 
 # API
