@@ -1,0 +1,23 @@
+var router = require('./..')();
+router.on(/[\w\s]+/, function (foo, bar, baz, next) {
+  foo.msg = 'foo';
+  // trigger an error so our handler can catch it
+  next(new Error());
+});
+router.on(function (err, foo, bar, baz, next) {
+  // our error handler captured it, so call next without the error to get back on track
+  next();
+});
+router.on('some*', function (foo, bar, baz, next) {
+  // update bar
+  bar.msg = 'bar';
+  next();
+});
+router.on('some event', function (foo, bar, baz, next) {
+  // update baz
+  baz.msg = 'baz';
+  next();
+});
+router('some event', {}, {}, {}, function (err, foo, bar, baz) {
+  console.log(err, foo, bar, baz) 
+});
