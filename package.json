@@ -1,7 +1,7 @@
 {
   "name": "switched",
-  "version": "0.0.0",
-  "description": "A switched for turbonetix projects",
+  "version": "0.0.0-1",
+  "description": "Route your data through a series of middleware functions.",
   "main": "index.js",
   "scripts": {
     "test": "grunt"
@@ -12,6 +12,7 @@
   },
   "keywords": [
     "event",
+    "data",
     "router",
     "generic",
     "wildcard"

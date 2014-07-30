@@ -32,7 +32,7 @@ router('some event', {some:'argument'});
 
 * Express-like routing capabilties for data.
 * Gives you more control over how data is handled.
-* Attach `Switch` instances to other `Switich` instances.
+* Attach `Switched` instances to other `Switched` instances.
 * Support for "wildcard" (*) and Regular Expression matching.
 
 # API
