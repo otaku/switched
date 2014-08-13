@@ -57,6 +57,35 @@ describe 'lib', ->
       And -> expect(@f).toHaveBeenCalled()
       And -> expect(@order).toEqual ['a', 'b', 'c', 'e', 'f']
 
+    describe '#route (name:String, arg:mixed)', ->
+
+      Given -> @order = []
+      Given -> @a = jasmine.createSpy 'a'
+      Given -> @b = jasmine.createSpy 'b'
+      Given -> @c = jasmine.createSpy 'c'
+      Given -> @d = jasmine.createSpy 'd'
+      Given -> @e = jasmine.createSpy 'e'
+      Given -> @f = jasmine.createSpy 'f'
+      Given -> @error = new Error 'something wrong'
+      Given -> @foo = (arg, next) => @a(); @order.push('a'); next()
+      Given -> @bar = (arg, next) => @b(); @order.push('b'); next()
+      Given -> @baz = (arg, next) => @c(); @order.push('c'); next @error
+      Given -> @err = (err, arg, next) => @d err; @order.push('d'); next err
+      Given -> @err1 = (err, arg, next, end) => @e err; @order.push('e'); end()
+      Given -> @cra = (arg, next) => @f(); @order.push('f'); next()
+      Given -> @path = [@foo, @bar, @err, @baz, @err1, @cra]
+      Given -> @router.use @path
+      Given -> spyOn(@router,['getPath']).andCallThrough()
+      When -> @router.route @name, @arg
+      Then -> expect(@router.getPath).toHaveBeenCalledWith @name
+      And -> expect(@a).toHaveBeenCalled()
+      And -> expect(@b).toHaveBeenCalled()
+      And -> expect(@c).toHaveBeenCalled()
+      And -> expect(@d).not.toHaveBeenCalled()
+      And -> expect(@e).toHaveBeenCalledWith @error
+      And -> expect(@f).not.toHaveBeenCalled()
+      And -> expect(@order).toEqual ['a', 'b', 'c', 'e']
+
     describe '#route (name:String, arg:mixed, cb:Function)', ->
 
       Given -> @order = []

@@ -8,20 +8,20 @@ Route your data through a series of middleware functions.
 
 ```javascript
 var router = require('switched');
-router.on(/[\w\s]+/, function (arg, next) {
+router.on(/[\w\s]+/, function (arg, next, end) {
   arg.count = 0;
   next();
 });
-router.on(function (arg, next) {
+router.on(function (arg, next, end) {
   arg.count++;
   next();
 });
-router.on(function (err, arg, next) {
+router.on(function (err, arg, next, end) {
   console.error(err);
   arg.count++;
   next();
 });
-router.on('some event', function (arg, next) {
+router.on('some event', function (arg, next, end) {
   arg.count++;
   console.log('count %s', arg.count);
 });
@@ -76,9 +76,9 @@ router.use(function (arg, next) {
 You can pass in multiple `function`s.
 
 ```javascript
-var a = function (arg, next) { next() };
-var b = function (arg, next) { next() };
-var c = function (arg, next) { next() };
+var a = function (arg, next, end) { next() };
+var b = function (arg, next, end) { next() };
+var c = function (arg, next, end) { next() };
 
 router.use(a,b,c); 
 ```
@@ -86,7 +86,7 @@ router.use(a,b,c);
 You can pass in a function that accepts an `Error` object.
 
 ```javascript
-router.use(function (err, arg, next) {
+router.use(function (err, arg, next, end) {
   console.error(err);
   
   //calling next(err) will invoke the next error handler.
@@ -108,9 +108,9 @@ router.use('some event', function (arg, next) {
 You can also pass in multiple `function`s for handling the `event`.
 
 ```javascript
-var chop = function (arg, next) { next() };
-var clean = function (arg, next) { next() };
-var pretty = function (arg, next) { next() };
+var chop = function (arg, next, end) { next() };
+var clean = function (arg, next, end) { next() };
+var pretty = function (arg, next, end) { next() };
 
 router.use('some event', chop, clean, pretty);
 ```
@@ -120,7 +120,7 @@ router.use('some event', chop, clean, pretty);
 Bind the `function` using a `RegExp` pattern to match the `event`.
 
 ```javascript
-router.use(/\w+/, function (arg, next) {
+router.use(/\w+/, function (arg, next, end) {
   next();
 });
 ```
@@ -128,9 +128,9 @@ router.use(/\w+/, function (arg, next) {
 You can also pass in multiple `function`s for handling the `event`.
 
 ```javascript
-var chop = function (arg, next) { next() };
-var clean = function (arg, next) { next() };
-var pretty = function (arg, next) { next() };
+var chop = function (arg, next, end) { next() };
+var clean = function (arg, next, end) { next() };
+var pretty = function (arg, next, end) { next() };
 
 router.use(/\w+/, chop, clean, pretty);
 ```
@@ -141,7 +141,7 @@ You can attach another `Router` instance to your `Router` instance.
 
 ```javascript
 var another = Router();
-another.use(function (arg, next) { next(); });
+another.use(function (arg, next, end) { next(); });
 
 router.use(another);
 ```
@@ -150,13 +150,13 @@ Attach multiple routers in a single call.
 
 ```javascript
 var foo = Router();
-foo.use(function (arg, next) { next(); });
+foo.use(function (arg, next, end) { next(); });
 
 var bar = Router();
-bar.use(function (arg, next) { next(); });
+bar.use(function (arg, next, end) { next(); });
 
 var baz = Router();
-baz.use(function (arg, next) { next(); });
+baz.use(function (arg, next, end) { next(); });
 
 router.use(foo, bar, baz);
 ```
@@ -168,7 +168,7 @@ instance as well to the `event`.
 
 ```javascript
 var foo = Router();
-foo.use(function (arg, next) { next(); });
+foo.use(function (arg, next, end) { next(); });
 
 router.use('some event', foo);
 ```
@@ -177,13 +177,13 @@ Attach multiple routers in a single call to the `event` too.
 
 ```javascript
 var foo = Router();
-foo.use(function (arg, next) { next(); });
+foo.use(function (arg, next, end) { next(); });
 
 var bar = Router();
-bar.use(function (arg, next) { next(); });
+bar.use(function (arg, next, end) { next(); });
 
 var baz = Router();
-baz.use(function (arg, next) { next(); });
+baz.use(function (arg, next, end) { next(); });
 
 router.use('some event', foo, bar, baz);
 ```
@@ -194,16 +194,16 @@ Attach an `Array` of `Fuction`'s or `Router` instances, or an `Array` or `Array`
 
 ```javascript
 var middleware = [
-  function (arg, next) { next(); },
+  function (arg, next, end) { next(); },
   [
-    function (arg, next) { next(); },
-    Router().use(function (arg, next) { next(); }),
-    function (arg, next) { next(); },
+    function (arg, next, end) { next(); },
+    Router().use(function (arg, next, end) { next(); }),
+    function (arg, next, end) { next(); },
   ],
-  Router().use(function (arg, next) { next(); })
+  Router().use(function (arg, next, end) { next(); })
 ];
 
-var errHandler = function (err, arg, next) { next(err); } 
+var errHandler = function (err, arg, next, end) { next(err); } 
 
 router.use(middleware, errHandler);
 ```
@@ -214,16 +214,16 @@ Attach everything to an event.
 
 ```javascript
 var middleware = [
-  function (arg, next) { next(); },
+  function (arg, next, end) { next(); },
   [
-    function (arg, next) { next(); },
-    Router().use(function (arg, next) { next(); }),
-    function (arg, next) { next(); },
+    function (arg, next, end) { next(); },
+    Router().use(function (arg, next, end) { next(); }),
+    function (arg, next, end) { next(); },
   ],
-  Router().use(function (arg, next) { next(); })
+  Router().use(function (arg, next, end) { next(); })
 ];
 
-var errHandler = function (err, arg, next) { next(err); } 
+var errHandler = function (err, arg, next, end) { next(err); } 
 
 router.use('only this event', middleware, errHandler);
 ```
@@ -233,7 +233,7 @@ router.use('only this event', middleware, errHandler);
 This is an alias to to the `use` method.  It does the same thing.
 
 ```javascript
-router.on(function (arg, next) { next() });
+router.on(function (arg, next, end) { next() });
 ```
 
 # Installation and Environment Setup
