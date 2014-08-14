@@ -24,3 +24,13 @@ router.on(/event/, function (foo, bar, baz, next, end) {
 router('some event', {}, {}, {}, function (err, foo, bar, baz) {
   console.log(err, foo, bar, baz) 
 });
+
+var router = require('./..')();
+router.on(/[\w\s]+/, function (foo, bar, baz, next, end) {
+  foo.msg = 'foo';
+  // trigger an error so our handler can catch it
+  next(new Error());
+});
+router('some event', {}, {}, {}, function (err, foo, bar, baz) {
+  console.log(err, foo, bar, baz) 
+});
